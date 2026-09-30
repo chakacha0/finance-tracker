@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const { Transaction } = require("../models");
 
-// GET /transactions
 router.get("/", async (req, res) => {
   try {
     const transactions = await Transaction.findAll();
@@ -12,7 +11,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET /transactions/:id
 router.get("/:id", async (req, res) => {
   try {
     const transaction = await Transaction.findByPk(req.params.id);
@@ -25,7 +23,6 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// POST /transactions
 router.post("/", async (req, res) => {
   try {
     const { amount, type, category, description, date } = req.body;
@@ -50,7 +47,6 @@ router.post("/", async (req, res) => {
   }
 });
 
-// PUT /transactions/:id
 router.put("/:id", async (req, res) => {
   try {
     const transaction = await Transaction.findByPk(req.params.id);
@@ -66,7 +62,6 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// DELETE /transactions/:id
 router.delete("/:id", async (req, res) => {
   try {
     const transaction = await Transaction.findByPk(req.params.id);
@@ -83,7 +78,6 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-// GET /transactions/stats/balance
 router.get("/stats/balance", async (req, res) => {
   try {
     const { fn, col, literal } = require("sequelize");
@@ -121,7 +115,6 @@ router.get("/stats/balance", async (req, res) => {
   }
 });
 
-// GET /transactions/stats/by-category
 router.get("/stats/by-category", async (req, res) => {
   try {
     const { fn, col, literal } = require("sequelize");
@@ -144,7 +137,6 @@ router.get("/stats/by-category", async (req, res) => {
   }
 });
 
-// GET /transactions/stats/monthly
 router.get("/stats/monthly", async (req, res) => {
   try {
     const { fn, col, literal } = require("sequelize");
