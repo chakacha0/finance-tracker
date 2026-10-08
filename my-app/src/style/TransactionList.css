@@ -1,0 +1,215 @@
+@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Onest:wght@400;500;600&display=swap");
+
+.tx {
+  --bg: #e6daf7; /* сиреневый фон */
+  --card: #f5eefd;
+  --violet: #6d3fc0;
+  --violet-dark: #3a1d73;
+  --lilac: #cdb6f2;
+  --lime: #c3e063;
+  --text: #2a1650;
+  --muted: #7d68a8;
+
+  width: 100%;
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 32px clamp(16px, 3vw, 48px);
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Onest", system-ui, sans-serif;
+  font-size: 15px;
+  padding-left: 10%;
+  padding-right: 10%;
+}
+.tx *,
+.tx *::before,
+.tx *::after {
+  box-sizing: border-box;
+}
+.tx h1,
+.tx h2,
+.tx p,
+.tx ul {
+  margin: 0;
+}
+
+.tx-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+.tx-head h1 {
+  font-family: "Bricolage Grotesque", system-ui, sans-serif;
+  font-weight: 800;
+  font-size: clamp(32px, 5vw, 56px);
+  letter-spacing: -0.03em;
+  color: var(--violet-dark);
+}
+.tx-head span {
+  color: var(--muted);
+}
+
+/* на весь экран: форма слева, список занимает всё остальное */
+.tx-layout {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+/* список */
+
+.tx .tx-bar select {
+  width: auto;
+  min-width: 200px;
+}
+.tx-bar {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.tx-bar select {
+  width: auto;
+  min-width: 200px;
+}
+
+.tx-tabs {
+  display: inline-flex;
+  background: var(--card);
+  padding: 4px;
+  border-radius: 999px;
+}
+.tx-tabs button {
+  border: 0;
+  padding: 9px 20px;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+}
+.tx-tabs button.on {
+  background: var(--violet);
+  color: #fff;
+}
+
+.tx-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.tx-list li {
+  display: grid;
+  grid-template-columns: 48px 1fr auto auto auto;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  background: var(--card);
+  border: 2px solid transparent;
+  border-radius: 22px;
+}
+.tx-list li.editing {
+  border-color: var(--violet);
+}
+
+.tx-dot {
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-weight: 800;
+  font-size: 18px;
+}
+.tx-dot.income {
+  background: var(--lime);
+  color: var(--violet-dark);
+}
+.tx-dot.expense {
+  background: var(--lilac);
+  color: var(--violet-dark);
+}
+
+.tx-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.tx-info b {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tx-info small {
+  color: var(--muted);
+}
+
+.tx-sum {
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  white-space: nowrap;
+}
+.tx-sum.income {
+  color: #5d7a14;
+}
+.tx-sum.expense {
+  color: var(--violet-dark);
+}
+
+.tx-icon {
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 16px;
+  cursor: pointer;
+}
+.tx-icon:hover {
+  background: var(--lilac);
+  color: var(--violet-dark);
+}
+.tx-icon.del:hover {
+  background: #ffd0dc;
+  color: #a3153f;
+}
+
+.tx-empty {
+  padding: 48px;
+  text-align: center;
+  color: var(--muted);
+  border: 2px dashed var(--lilac);
+  border-radius: 28px;
+}
+
+.tx-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.tx-brand img {
+  height: 1.7em; /* подстраивается под размер заголовка */
+  width: auto;
+}
+
+@media (max-width: 860px) {
+  .tx-layout {
+    grid-template-columns: 1fr;
+  }
+  .tx-list li {
+    grid-template-columns: 44px 1fr auto;
+  }
+  .tx-icon {
+    grid-row: 2;
+  }
+}

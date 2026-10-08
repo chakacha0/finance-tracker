@@ -1,0 +1,97 @@
+/* форма */
+.tx-form {
+  background: var(--violet-dark);
+  color: #f1e9ff;
+  border-radius: 28px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  position: sticky;
+  top: 24px;
+}
+.tx-form h2 {
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-size: 22px;
+}
+.tx-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--lilac);
+}
+
+.tx input,
+.tx select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid transparent;
+  border-radius: 14px;
+  background: var(--card);
+  color: var(--text);
+  font: inherit;
+}
+.tx input:focus-visible,
+.tx select:focus-visible,
+.tx button:focus-visible {
+  outline: none;
+  border-color: var(--lime);
+  box-shadow: 0 0 0 3px rgba(195, 224, 99, 0.45);
+}
+
+.tx-switch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 4px;
+  border-radius: 999px;
+}
+.tx-switch button {
+  border: 0;
+  padding: 10px;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--lilac);
+  font: inherit;
+  cursor: pointer;
+}
+.tx-switch button.on.expense {
+  background: var(--violet);
+  color: #fff;
+}
+.tx-switch button.on.income {
+  background: var(--lime);
+  color: var(--violet-dark);
+  font-weight: 600;
+}
+
+.tx-error {
+  color: #ffb3c6;
+  font-size: 14px;
+}
+
+.tx-btn {
+  padding: 13px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--lime);
+  color: var(--violet-dark);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.tx-btn:hover {
+  filter: brightness(1.05);
+}
+.tx-btn.ghost {
+  background: transparent;
+  color: var(--lilac);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+@media (max-width: 860px) {
+  .tx-form {
+    position: static;
+  }
+}
