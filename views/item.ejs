@@ -1,0 +1,13 @@
+<div class="card">
+  <h2 class="title">Транзакция №<%= transaction.id %></h2>
+
+  <ul class="detail">
+    <li><span>Сумма</span><b><%= transaction.amount %></b></li>
+    <li><span>Тип</span><b><%= transaction.type === 'income' ? 'Доход' : 'Расход' %></b></li>
+    <li><span>Категория</span><b><%= transaction.category %></b></li>
+    <li><span>Описание</span><b><%= transaction.description %></b></li>
+    <li><span>Дата</span><b><%= formatDate(transaction.date) %></b></li>
+  </ul>
+
+  <a class="btn" href="/">← К списку</a>
+</div>

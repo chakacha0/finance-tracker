@@ -1,0 +1,273 @@
+@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Onest:wght@400;500;600&display=swap");
+
+:root {
+  --bg: #e6daf7;
+  --card: #f5eefd;
+  --violet: #6d3fc0;
+  --violet-dark: #3a1d73;
+  --lilac: #cdb6f2;
+  --lime: #c3e063;
+  --text: #2a1650;
+  --muted: #7d68a8;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Onest", system-ui, sans-serif;
+  font-size: 15px;
+}
+
+h1,
+h2,
+p,
+ul {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 32px 16px 48px;
+}
+
+/* шапка */
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+.head h1 {
+  font-family: "Bricolage Grotesque", system-ui, sans-serif;
+  font-weight: 800;
+  font-size: clamp(32px, 5vw, 52px);
+  letter-spacing: -0.03em;
+  color: var(--violet-dark);
+}
+
+.tabs {
+  display: inline-flex;
+  background: var(--card);
+  padding: 4px;
+  border-radius: 999px;
+}
+.tabs a {
+  padding: 9px 20px;
+  border-radius: 999px;
+  color: var(--muted);
+  font-weight: 500;
+  transition: 0.15s;
+}
+.tabs a:hover {
+  color: var(--violet-dark);
+}
+.tabs a.on {
+  background: var(--violet);
+  color: #fff;
+}
+
+.title {
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-weight: 800;
+  font-size: 28px;
+  letter-spacing: -0.02em;
+  color: var(--violet-dark);
+  margin-bottom: 16px;
+}
+
+/* список */
+.list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.row {
+  display: grid;
+  grid-template-columns: 48px 1fr auto;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  background: var(--card);
+  border: 2px solid transparent;
+  border-radius: 22px;
+  transition: 0.15s;
+}
+.row:hover {
+  border-color: var(--violet);
+  transform: translateY(-1px);
+}
+
+.dot {
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-weight: 800;
+  font-size: 22px;
+  color: var(--violet-dark);
+}
+.dot.income {
+  background: var(--lime);
+}
+.dot.expense {
+  background: var(--lilac);
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.info b {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.info small {
+  color: var(--muted);
+}
+
+.sum {
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  white-space: nowrap;
+}
+.sum.income {
+  color: #5d7a14;
+}
+.sum.expense {
+  color: var(--violet-dark);
+}
+
+.empty {
+  padding: 48px;
+  text-align: center;
+  color: var(--muted);
+  border: 2px dashed var(--lilac);
+  border-radius: 28px;
+}
+
+/* карточка (страница транзакции и форма) */
+.card {
+  background: var(--card);
+  border-radius: 28px;
+  padding: 28px;
+}
+
+.detail {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0 24px;
+}
+.detail li {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--lilac);
+}
+.detail li:last-child {
+  border-bottom: 0;
+}
+.detail span {
+  color: var(--muted);
+}
+.detail b {
+  font-weight: 600;
+  text-align: right;
+}
+
+/* форма */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.form label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--muted);
+  font-weight: 500;
+}
+.form input,
+.form select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid transparent;
+  border-radius: 14px;
+  background: #fff;
+  color: var(--text);
+  font: inherit;
+  outline: none;
+  transition: 0.15s;
+}
+.form input:focus,
+.form select:focus {
+  border-color: var(--violet);
+}
+
+.btn {
+  display: inline-block;
+  border: 0;
+  padding: 13px 24px;
+  border-radius: 999px;
+  background: var(--violet);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.15s;
+}
+.btn:hover {
+  background: var(--violet-dark);
+}
+.btn.lime {
+  background: var(--lime);
+  color: var(--violet-dark);
+}
+.btn.lime:hover {
+  background: #b3d24f;
+}
+
+.back {
+  display: inline-block;
+  margin-top: 20px;
+  color: var(--muted);
+  font-weight: 500;
+}
+.back:hover {
+  color: var(--violet-dark);
+}
+
+@media (max-width: 600px) {
+  .row {
+    grid-template-columns: 44px 1fr;
+  }
+  .sum {
+    grid-column: 2;
+  }
+}

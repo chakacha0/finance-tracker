@@ -1,0 +1,22 @@
+<h2 class="title">Транзакции</h2>
+
+<% if (transactions.length === 0) { %>
+  <div class="empty">Транзакций пока нет.</div>
+<% } else { %>
+  <ul class="list">
+    <% transactions.forEach(t => { %>
+      <li>
+        <a class="row" href="/item/<%= t.id %>">
+          <div class="dot <%= t.type %>"><%= t.type === 'income' ? '+' : '−' %></div>
+          <div class="info">
+            <b><%= t.description || t.category || 'Без описания' %></b>
+            <small><%= t.category %> · <%= formatDate(t.date) %></small>
+          </div>
+          <div class="sum <%= t.type %>">
+            <%= t.type === 'income' ? '+' : '−' %><%= t.amount %>
+          </div>
+        </a>
+      </li>
+    <% }) %>
+  </ul>
+<% } %>

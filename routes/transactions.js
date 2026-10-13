@@ -38,7 +38,7 @@ router.post("/", async (req, res) => {
       type,
       category,
       description,
-      date: date || new Date().toISOString().split("T")[0],
+      date: date || new Date(),
     });
 
     res.status(201).json(newTransaction);

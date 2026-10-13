@@ -1,0 +1,37 @@
+<div class="card">
+  <h2 class="title">Добавить транзакцию</h2>
+
+  <form class="form" action="/add" method="POST">
+    <label
+      >Сумма
+      <input type="number" name="amount" step="0.01" required />
+    </label>
+
+    <label
+      >Тип
+      <select name="type" required>
+        <option value="income">Доход</option>
+        <option value="expense">Расход</option>
+      </select>
+    </label>
+
+    <label
+      >Категория
+      <input type="text" name="category" />
+    </label>
+
+    <label
+      >Описание
+      <input type="text" name="description" />
+    </label>
+
+    <label
+      >Дата
+      <input type="datetime-local" name="date" />
+    </label>
+
+    <button class="btn lime" type="submit">Добавить</button>
+  </form>
+</div>
+
+<a class="back" href="/">← Назад к списку</a>
