@@ -9,6 +9,9 @@ app.use(express.json());
 
 const PORT = 3000;
 
+const cors = require("cors");
+app.use(cors());
+
 app.use("/transactions", transactionsRouter);
 
 app.use("/auth", userAuthRouter);

@@ -1,0 +1,35 @@
+.notice {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  max-width: min(560px, calc(100vw - 32px));
+  padding: 12px 12px 12px 22px;
+  border-radius: 999px;
+  background: #ffd0dc;
+  color: #6b0f2b;
+  font-weight: 500;
+  box-shadow: 0 10px 30px rgba(107, 15, 43, 0.25);
+  animation: notice-in 0.25s ease-out;
+  z-index: 20;
+}
+.notice button {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(107, 15, 43, 0.12);
+  color: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+.notice button:hover { background: rgba(107, 15, 43, 0.22); }
+@keyframes notice-in {
+  from { opacity: 0; transform: translate(-50%, -12px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+@media (prefers-reduced-motion: reduce) { .notice { animation: none; } }

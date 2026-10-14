@@ -213,3 +213,74 @@
     grid-row: 2;
   }
 }
+
+/* Добавь в конец style/TransactionList.css */
+
+/* загрузка и ошибка */
+.tx-state {
+  min-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  text-align: center;
+  color: var(--muted);
+}
+.tx-state p {
+  margin: 0;
+  font-size: 18px;
+}
+.tx-state-error {
+  color: #a3153f;
+  font-weight: 600;
+  max-width: 420px;
+}
+
+.tx-spinner {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 5px solid var(--lilac);
+  border-top-color: var(--violet);
+  animation: tx-spin 0.8s linear infinite;
+}
+@keyframes tx-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tx-spinner {
+    animation-duration: 3s;
+  }
+}
+/* Добавь в конец style/TransactionList.css */
+
+/* запись ждёт ответа сервера */
+.tx-list li.pending {
+  opacity: 0.55;
+}
+.tx-icon:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+.tx-icon:disabled:hover {
+  background: transparent;
+  color: var(--muted);
+}
+
+/* Добавь в конец style/TransactionList.css */
+
+/* поиск */
+.tx-search { position: relative; margin-bottom: 14px; }
+.tx-search input { width: 100%; padding-right: 90px; background: var(--card); }
+.tx-search-status {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  font-size: 13px;
+  pointer-events: none;
+}

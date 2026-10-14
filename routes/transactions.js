@@ -1,10 +1,40 @@
 const express = require("express");
 const router = express.Router();
 const { Transaction } = require("../models");
+const { Op } = require("sequelize");
+
+// router.get("/", async (req, res) => {
+//   try {
+//     const transactions = await Transaction.findAll();
+//     res.json(transactions);
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// });
+
+
 
 router.get("/", async (req, res) => {
   try {
-    const transactions = await Transaction.findAll();
+    const { search } = req.query;
+    const where = {};
+
+    if (search && search.trim()) {
+      const safe = search.trim().replace(/[\\%_]/g, "\\$&");
+      const pattern = `%${safe}%`;
+      where[Op.or] = [
+        { description: { [Op.iLike]: pattern } },
+        { category: { [Op.iLike]: pattern } },
+      ];
+    }
+
+    const transactions = await Transaction.findAll({
+      where,
+      order: [
+        ["date", "DESC"],
+        ["id", "DESC"],
+      ],
+    });
     res.json(transactions);
   } catch (err) {
     res.status(500).json({ error: err.message });

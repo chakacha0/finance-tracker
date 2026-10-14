@@ -1,210 +1,175 @@
 import "../../style/TransactionList.css";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import {
+  fetchTransactions,
+  addTransaction,
+  updateTransaction,
+  deleteTransaction,
+} from "../../api";
 import TransactionStats from "./TransactionStats";
 import UndoToast from "./UndoToast";
+import Notice from "./Notice";
+import useDebounce from "../../hooks/useDebounce";
 import TransactionForm from "./TransactionForm";
 
-
-const MOCK = [
-  {
-    id: 1,
-    amount: 2400,
-    type: "income",
-    category: "Зарплата",
-    description: "Зарплата за месяц",
-    date: "2026-09-28",
-  },
-  {
-    id: 2,
-    amount: 64.9,
-    type: "expense",
-    category: "Продукты",
-    description: "Maxima, закупка на неделю",
-    date: "2026-09-30",
-  },
-  {
-    id: 3,
-    amount: 18.5,
-    type: "expense",
-    category: "Кафе",
-    description: "Кофе и круассан",
-    date: "2026-09-29",
-  },
-  {
-    id: 4,
-    amount: 780,
-    type: "expense",
-    category: "Жильё",
-    description: "Аренда квартиры",
-    date: "2026-09-26",
-  },
-  {
-    id: 5,
-    amount: 320,
-    type: "income",
-    category: "Фриланс",
-    description: "Вёрстка лендинга",
-    date: "2026-09-22",
-  },
-  {
-    id: 6,
-    amount: 42,
-    type: "expense",
-    category: "Транспорт",
-    description: "Проездной",
-    date: "2026-09-20",
-  },
-  {
-    id: 7,
-    amount: 119,
-    type: "expense",
-    category: "Одежда",
-    description: "Кроссовки",
-    date: "2026-09-18",
-  },
-  {
-    id: 8,
-    amount: 27,
-    type: "expense",
-    category: "Развлечения",
-    description: "Кино",
-    date: "2026-09-15",
-  },
-  {
-    id: 9,
-    amount: 2400,
-    type: "income",
-    category: "Зарплата",
-    description: "Зарплата за месяц",
-    date: "2026-08-28",
-  },
-  {
-    id: 10,
-    amount: 740,
-    type: "expense",
-    category: "Жильё",
-    description: "Аренда квартиры",
-    date: "2026-08-26",
-  },
-  {
-    id: 11,
-    amount: 92.4,
-    type: "expense",
-    category: "Продукты",
-    description: "Продукты",
-    date: "2026-08-20",
-  },
-  {
-    id: 12,
-    amount: 210,
-    type: "income",
-    category: "Фриланс",
-    description: "Логотип для клиента",
-    date: "2026-08-12",
-  },
-  {
-    id: 13,
-    amount: 2300,
-    type: "income",
-    category: "Зарплата",
-    description: "Зарплата за месяц",
-    date: "2026-07-28",
-  },
-  {
-    id: 14,
-    amount: 740,
-    type: "expense",
-    category: "Жильё",
-    description: "Аренда квартиры",
-    date: "2026-07-26",
-  },
-  {
-    id: 15,
-    amount: 320,
-    type: "expense",
-    category: "Путешествия",
-    description: "Билеты на выходные",
-    date: "2026-07-15",
-  },
-  {
-    id: 16,
-    amount: 2300,
-    type: "income",
-    category: "Зарплата",
-    description: "Зарплата за месяц",
-    date: "2026-06-28",
-  },
-  {
-    id: 17,
-    amount: 740,
-    type: "expense",
-    category: "Жильё",
-    description: "Аренда квартиры",
-    date: "2026-06-26",
-  },
-  {
-    id: 18,
-    amount: 101.7,
-    type: "expense",
-    category: "Продукты",
-    description: "Продукты",
-    date: "2026-06-14",
-  },
-];
-
-const STORAGE_KEY = "transactions";
-
 export default function TransactionList() {
-  
+  // массив операций, который приходит с сервера
   const [items, setItems] = useState([]);
-  const [loaded, setLoaded] = useState(false); 
-  const [editingId, setEditingId] = useState(null);  
-  const [filter, setFilter] = useState("all"); 
-  const [sort, setSort] = useState("date-desc");  
-  const [deleted, setDeleted] = useState(null); 
+  // идёт ли сейчас загрузка (при открытии страницы она сразу началась)
+  const [loading, setLoading] = useState(true);
+  // текст ошибки, пустая строка - ошибки нет
+  const [error, setError] = useState("");
 
-  
+  const [editingId, setEditingId] = useState(null);
+  const [filter, setFilter] = useState("all");
+  const [sort, setSort] = useState("date-desc");
+  const [deleted, setDeleted] = useState(null);
+  // уведомление об ошибке: { id, text } или null
+  const [notice, setNotice] = useState(null);
+
+  const showNotice = (text) => setNotice({ id: Date.now(), text });
+
+  // Поиск: search - то, что напечатано в поле (меняется на каждую букву),
+  // debouncedSearch - то же значение, но обновляется через 400 мс после паузы.
+  // На сервер уходит именно debouncedSearch.
+  const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search, 400);
+  // идёт ли запрос поиска (страница при этом не пропадает)
+  const [searching, setSearching] = useState(false);
+  // получилось ли хоть раз загрузить список
+  const firstLoadDone = useRef(false);
+  // счётчик для кнопки «Повторить»: его изменение перезапускает эффект
+  const [reloadKey, setReloadKey] = useState(0);
+
+  const retry = () => {
+    setError("");
+    setLoading(true);
+    setReloadKey((k) => k + 1);
+  };
+
+  // Загрузка списка. Срабатывает при открытии страницы и при каждом
+  // изменении debouncedSearch, то есть после паузы в наборе текста.
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      setItems(saved ? JSON.parse(saved) : MOCK);
-    } catch {
-      setItems(MOCK);
-    }
-    setLoaded(true);
-  }, []);
+    // AbortController позволяет отменить запрос, если он уже не нужен
+    const controller = new AbortController();
 
+    const load = async () => {
+      setSearching(true);
+      try {
+        const data = await fetchTransactions({
+          search: debouncedSearch,
+          signal: controller.signal,
+        });
+        setItems(data);
+        setError("");
+        firstLoadDone.current = true;
+      } catch (err) {
+        // запрос отменён нами (пользователь продолжил печатать) - не ошибка
+        if (controller.signal.aborted) return;
+        if (!firstLoadDone.current) {
+          setError(err.message); // первая загрузка - страница с кнопкой «Повторить»
+        } else {
+          showNotice(`Не удалось выполнить поиск: ${err.message}`);
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setSearching(false);
+          setLoading(false);
+        }
+      }
+    };
+    load();
 
-  useEffect(() => {
-    if (!loaded) return; 
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
-  }, [items, loaded]);
+    // очистка: при новом поиске или закрытии страницы отменяем старый запрос,
+    // чтобы устаревший ответ не перезаписал свежий
+    return () => controller.abort();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedSearch, reloadKey]);
 
   const editing = items.find((t) => t.id === editingId) || null;
 
-  const handleSave = (data) => {
-    if (editing === null) {     
-      setItems([{ ...data, id: Date.now() }, ...items]);
-    } else {      
-      setItems(items.map((t) => (t.id === editingId ? { ...t, ...data } : t)));
+  // Во всех операциях ниже используется оптимистичное обновление:
+  // сначала меняем список на экране, потом отправляем запрос,
+  // а если сервер ответил ошибкой - откатываем изменение.
+  // Флаг pending: true помечает записи, которые ещё ждут ответа сервера
+  // (их нельзя редактировать и удалять, пока запрос не завершится).
+
+  const handleSave = async (data) => {
+    if (editing === null) {
+      // ---------- ДОБАВЛЕНИЕ ----------
+      const tempId = Date.now(); // временный id
+      setItems((prev) => [{ ...data, id: tempId, pending: true }, ...prev]);
+      try {
+        const saved = await addTransaction(data);
+        // успех: заменяем временную запись на ту, что вернул сервер (с настоящим id)
+        setItems((prev) => prev.map((t) => (t.id === tempId ? saved : t)));
+      } catch (err) {
+        // ошибка: убираем временную запись и сообщаем пользователю
+        setItems((prev) => prev.filter((t) => t.id !== tempId));
+        showNotice(`Не удалось добавить: ${err.message}`);
+      }
+    } else {
+      // ---------- РЕДАКТИРОВАНИЕ ----------
+      const id = editingId;
+      const previous = editing; // копия записи до изменения - для отката
       setEditingId(null);
+      setItems((prev) =>
+        prev.map((t) => (t.id === id ? { ...t, ...data, pending: true } : t)),
+      );
+      try {
+        const saved = await updateTransaction(id, data);
+        setItems((prev) => prev.map((t) => (t.id === id ? saved : t)));
+      } catch (err) {
+        // ошибка: возвращаем старую версию записи
+        setItems((prev) => prev.map((t) => (t.id === id ? previous : t)));
+        showNotice(`Не удалось сохранить изменения: ${err.message}`);
+      }
     }
   };
 
   const startEdit = (t) => setEditingId(t.id);
 
-  const handleDelete = (id) => {
+  // ---------- УДАЛЕНИЕ ----------
+  const handleDelete = async (id) => {
     const index = items.findIndex((t) => t.id === id);
-    setDeleted({ item: items[index], index });
-    setItems(items.filter((t) => t.id !== id));
+    const item = items[index];
+    // сразу убираем из списка
+    setItems((prev) => prev.filter((t) => t.id !== id));
     if (editingId === id) setEditingId(null);
+    try {
+      await deleteTransaction(id);
+      // на сервере удалено - показываем плашку «Отменить»
+      setDeleted({ item, index });
+    } catch (err) {
+      // ошибка: возвращаем запись на прежнее место
+      setItems((prev) => {
+        const next = [...prev];
+        next.splice(Math.min(index, next.length), 0, item);
+        return next;
+      });
+      showNotice(`Не удалось удалить: ${err.message}`);
+    }
   };
 
-  const handleUndo = () => {
-    const next = [...items];
-    next.splice(deleted.index, 0, deleted.item);
-    setItems(next);
+  // «Отменить» удаление: запись уже стёрта на сервере,
+  // поэтому создаём её заново (id у неё будет новый)
+  const handleUndo = async () => {
+    const { item, index } = deleted;
     setDeleted(null);
+    const { id, pending, ...data } = item; // старый id серверу не нужен
+    const tempId = Date.now();
+    setItems((prev) => {
+      const next = [...prev];
+      next.splice(Math.min(index, next.length), 0, { ...data, id: tempId, pending: true });
+      return next;
+    });
+    try {
+      const saved = await addTransaction(data);
+      setItems((prev) => prev.map((t) => (t.id === tempId ? saved : t)));
+    } catch (err) {
+      setItems((prev) => prev.filter((t) => t.id !== tempId));
+      showNotice(`Не удалось восстановить: ${err.message}`);
+    }
   };
 
   const visible = items
@@ -215,6 +180,32 @@ export default function TransactionList() {
       if (sort === "amount-desc") return b.amount - a.amount;
       return a.amount - b.amount;
     });
+
+  // Состояние «загрузка»: индикатор вместо страницы
+  if (loading) {
+    return (
+      <div className="tx">
+        <div className="tx-state" role="status">
+          <div className="tx-spinner" />
+          <p>Загружаем операции…</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Состояние «ошибка»: сообщение и кнопка «Повторить»
+  if (error) {
+    return (
+      <div className="tx">
+        <div className="tx-state" role="alert">
+          <p className="tx-state-error">{error}</p>
+          <button className="tx-btn" onClick={retry}>
+            Повторить
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="tx">
@@ -236,6 +227,19 @@ export default function TransactionList() {
         />
 
         <section className="tx-main">
+          <div className="tx-search">
+            <input
+              type="search"
+              placeholder="Поиск по описанию и категории"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              aria-label="Поиск"
+            />
+            {(searching || search !== debouncedSearch) && (
+              <span className="tx-search-status">Ищем…</span>
+            )}
+          </div>
+
           <div className="tx-bar">
             <div className="tx-tabs">
               {[
@@ -262,17 +266,24 @@ export default function TransactionList() {
 
           {visible.length === 0 ? (
             <p className="tx-empty">
-              Ничего нет. Добавьте операцию в форме слева.
+              {debouncedSearch
+                ? `По запросу «${debouncedSearch}» ничего не найдено.`
+                : "Ничего нет. Добавьте операцию в форме слева."}
             </p>
           ) : (
             <ul className="tx-list">
               {visible.map((t) => (
-                <li key={t.id} className={editingId === t.id ? "editing" : ""}>
-                  <div className={`tx-dot ${t.type}`}>{t.category[0]}</div>
+                <li
+                  key={t.id}
+                  className={`${editingId === t.id ? "editing" : ""} ${t.pending ? "pending" : ""}`}
+                >
+                  <div className={`tx-dot ${t.type}`}>
+                    {(t.category || t.description || "?")[0]}
+                  </div>
                   <div className="tx-info">
-                    <b>{t.description || t.category}</b>
+                    <b>{t.description || t.category || "Без названия"}</b>
                     <small>
-                      {t.category} ·{" "}
+                      {t.category || "Без категории"} ·{" "}
                       {new Date(t.date).toLocaleDateString("ru-RU")}
                     </small>
                   </div>
@@ -283,6 +294,7 @@ export default function TransactionList() {
                   <button
                     className="tx-icon"
                     onClick={() => startEdit(t)}
+                    disabled={t.pending}
                     title="Редактировать"
                   >
                     ✎
@@ -290,6 +302,7 @@ export default function TransactionList() {
                   <button
                     className="tx-icon del"
                     onClick={() => handleDelete(t.id)}
+                    disabled={t.pending}
                     title="Удалить"
                   >
                     ✕
@@ -300,6 +313,10 @@ export default function TransactionList() {
           )}
         </section>
       </div>
+
+      {notice && (
+        <Notice key={notice.id} message={notice.text} onClose={() => setNotice(null)} />
+      )}
 
       {deleted && (
         <UndoToast
