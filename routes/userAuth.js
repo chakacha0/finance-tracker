@@ -93,7 +93,6 @@ router.post("/refresh", async (req, res) => {
       return res.status(401).json({ error: "Недействительный refresh-токен" });
     }
 
-    // Выдаём новую пару, старый refresh перестаёт работать
     const tokens = generateTokens(user);
     user.refreshToken = hashToken(tokens.refreshToken);
     await user.save();

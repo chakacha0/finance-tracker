@@ -198,7 +198,7 @@
   gap: 14px;
 }
 .tx-brand img {
-  height: 1.7em; /* подстраивается под размер заголовка */
+  height: 1.7em; 
   width: auto;
 }
 
@@ -214,9 +214,7 @@
   }
 }
 
-/* Добавь в конец style/TransactionList.css */
 
-/* загрузка и ошибка */
 .tx-state {
   min-height: 70vh;
   display: flex;
@@ -255,9 +253,7 @@
     animation-duration: 3s;
   }
 }
-/* Добавь в конец style/TransactionList.css */
 
-/* запись ждёт ответа сервера */
 .tx-list li.pending {
   opacity: 0.55;
 }
@@ -270,9 +266,7 @@
   color: var(--muted);
 }
 
-/* Добавь в конец style/TransactionList.css */
 
-/* поиск */
 .tx-search { position: relative; margin-bottom: 14px; }
 .tx-search input { width: 100%; padding-right: 90px; background: var(--card); }
 .tx-search-status {

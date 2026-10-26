@@ -13,32 +13,21 @@ import useDebounce from "../../hooks/useDebounce";
 import TransactionForm from "./TransactionForm";
 
 export default function TransactionList() {
-  // массив операций, который приходит с сервера
   const [items, setItems] = useState([]);
-  // идёт ли сейчас загрузка (при открытии страницы она сразу началась)
   const [loading, setLoading] = useState(true);
-  // текст ошибки, пустая строка - ошибки нет
   const [error, setError] = useState("");
-
   const [editingId, setEditingId] = useState(null);
   const [filter, setFilter] = useState("all");
   const [sort, setSort] = useState("date-desc");
   const [deleted, setDeleted] = useState(null);
-  // уведомление об ошибке: { id, text } или null
   const [notice, setNotice] = useState(null);
 
   const showNotice = (text) => setNotice({ id: Date.now(), text });
 
-  // Поиск: search - то, что напечатано в поле (меняется на каждую букву),
-  // debouncedSearch - то же значение, но обновляется через 400 мс после паузы.
-  // На сервер уходит именно debouncedSearch.
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 400);
-  // идёт ли запрос поиска (страница при этом не пропадает)
   const [searching, setSearching] = useState(false);
-  // получилось ли хоть раз загрузить список
   const firstLoadDone = useRef(false);
-  // счётчик для кнопки «Повторить»: его изменение перезапускает эффект
   const [reloadKey, setReloadKey] = useState(0);
 
   const retry = () => {
@@ -47,12 +36,8 @@ export default function TransactionList() {
     setReloadKey((k) => k + 1);
   };
 
-  // Загрузка списка. Срабатывает при открытии страницы и при каждом
-  // изменении debouncedSearch, то есть после паузы в наборе текста.
   useEffect(() => {
-    // AbortController позволяет отменить запрос, если он уже не нужен
     const controller = new AbortController();
-
     const load = async () => {
       setSearching(true);
       try {
@@ -64,10 +49,9 @@ export default function TransactionList() {
         setError("");
         firstLoadDone.current = true;
       } catch (err) {
-        // запрос отменён нами (пользователь продолжил печатать) - не ошибка
         if (controller.signal.aborted) return;
         if (!firstLoadDone.current) {
-          setError(err.message); // первая загрузка - страница с кнопкой «Повторить»
+          setError(err.message);
         } else {
           showNotice(`Не удалось выполнить поиск: ${err.message}`);
         }
@@ -79,39 +63,25 @@ export default function TransactionList() {
       }
     };
     load();
-
-    // очистка: при новом поиске или закрытии страницы отменяем старый запрос,
-    // чтобы устаревший ответ не перезаписал свежий
     return () => controller.abort();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedSearch, reloadKey]);
 
   const editing = items.find((t) => t.id === editingId) || null;
 
-  // Во всех операциях ниже используется оптимистичное обновление:
-  // сначала меняем список на экране, потом отправляем запрос,
-  // а если сервер ответил ошибкой - откатываем изменение.
-  // Флаг pending: true помечает записи, которые ещё ждут ответа сервера
-  // (их нельзя редактировать и удалять, пока запрос не завершится).
-
   const handleSave = async (data) => {
     if (editing === null) {
-      // ---------- ДОБАВЛЕНИЕ ----------
-      const tempId = Date.now(); // временный id
+      const tempId = Date.now();
       setItems((prev) => [{ ...data, id: tempId, pending: true }, ...prev]);
       try {
         const saved = await addTransaction(data);
-        // успех: заменяем временную запись на ту, что вернул сервер (с настоящим id)
         setItems((prev) => prev.map((t) => (t.id === tempId ? saved : t)));
       } catch (err) {
-        // ошибка: убираем временную запись и сообщаем пользователю
         setItems((prev) => prev.filter((t) => t.id !== tempId));
         showNotice(`Не удалось добавить: ${err.message}`);
       }
     } else {
-      // ---------- РЕДАКТИРОВАНИЕ ----------
       const id = editingId;
-      const previous = editing; // копия записи до изменения - для отката
+      const previous = editing;
       setEditingId(null);
       setItems((prev) =>
         prev.map((t) => (t.id === id ? { ...t, ...data, pending: true } : t)),
@@ -120,7 +90,6 @@ export default function TransactionList() {
         const saved = await updateTransaction(id, data);
         setItems((prev) => prev.map((t) => (t.id === id ? saved : t)));
       } catch (err) {
-        // ошибка: возвращаем старую версию записи
         setItems((prev) => prev.map((t) => (t.id === id ? previous : t)));
         showNotice(`Не удалось сохранить изменения: ${err.message}`);
       }
@@ -129,19 +98,15 @@ export default function TransactionList() {
 
   const startEdit = (t) => setEditingId(t.id);
 
-  // ---------- УДАЛЕНИЕ ----------
   const handleDelete = async (id) => {
     const index = items.findIndex((t) => t.id === id);
     const item = items[index];
-    // сразу убираем из списка
     setItems((prev) => prev.filter((t) => t.id !== id));
     if (editingId === id) setEditingId(null);
     try {
       await deleteTransaction(id);
-      // на сервере удалено - показываем плашку «Отменить»
       setDeleted({ item, index });
     } catch (err) {
-      // ошибка: возвращаем запись на прежнее место
       setItems((prev) => {
         const next = [...prev];
         next.splice(Math.min(index, next.length), 0, item);
@@ -151,16 +116,18 @@ export default function TransactionList() {
     }
   };
 
-  // «Отменить» удаление: запись уже стёрта на сервере,
-  // поэтому создаём её заново (id у неё будет новый)
   const handleUndo = async () => {
     const { item, index } = deleted;
     setDeleted(null);
-    const { id, pending, ...data } = item; // старый id серверу не нужен
+    const { id, pending, ...data } = item;
     const tempId = Date.now();
     setItems((prev) => {
       const next = [...prev];
-      next.splice(Math.min(index, next.length), 0, { ...data, id: tempId, pending: true });
+      next.splice(Math.min(index, next.length), 0, {
+        ...data,
+        id: tempId,
+        pending: true,
+      });
       return next;
     });
     try {
@@ -181,7 +148,6 @@ export default function TransactionList() {
       return a.amount - b.amount;
     });
 
-  // Состояние «загрузка»: индикатор вместо страницы
   if (loading) {
     return (
       <div className="tx">
@@ -193,7 +159,6 @@ export default function TransactionList() {
     );
   }
 
-  // Состояние «ошибка»: сообщение и кнопка «Повторить»
   if (error) {
     return (
       <div className="tx">
@@ -315,7 +280,11 @@ export default function TransactionList() {
       </div>
 
       {notice && (
-        <Notice key={notice.id} message={notice.text} onClose={() => setNotice(null)} />
+        <Notice
+          key={notice.id}
+          message={notice.text}
+          onClose={() => setNotice(null)}
+        />
       )}
 
       {deleted && (
