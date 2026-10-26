@@ -1,22 +1,24 @@
 require("dotenv").config();
 const express = require("express");
+const mongoose = require("mongoose");
 const transactionsRouter = require("./routes/transactions");
-const userAuthRouter = require("./routes/userAuth");
-const userProfileRouter = require("./routes/userProfile");
+const Transaction = require("./models/transaction");
 
 const app = express();
+
 app.use(express.json());
+
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log("MongoDB connected"))
+  .catch((err) => console.error("MongoDB connection error:", err));
 
 const PORT = 3000;
 
 const cors = require("cors");
 app.use(cors());
 
-app.use("/transactions", transactionsRouter);
-
-app.use("/auth", userAuthRouter);
-
-app.use("/profile", userProfileRouter);
+app.use("/transactions", require("./routes/transactions"));
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
