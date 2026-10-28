@@ -1,8 +1,5 @@
-import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import TransactionList from "./components/layout/TransactionList.jsx";
+import App from "./App.jsx";
 
-createRoot(document.getElementById("root")).render(
-  <TransactionList></TransactionList>,
-);
+createRoot(document.getElementById("root")).render(<App />);

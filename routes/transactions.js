@@ -1,23 +1,25 @@
 const express = require("express");
 const router = express.Router();
 const { Transaction } = require("../models");
-const { Op } = require("sequelize");
+const { Op, fn, col, literal } = require("sequelize");
+const authMiddleware = require("../middleware/auth");
 
-// router.get("/", async (req, res) => {
-//   try {
-//     const transactions = await Transaction.findAll();
-//     res.json(transactions);
-//   } catch (err) {
-//     res.status(500).json({ error: err.message });
-//   }
-// });
+// Все роуты ниже доступны только с токеном, и работают только с данными владельца
+router.use(authMiddleware);
 
-
+// поля, которые можно менять через PUT (userId и id менять нельзя)
+const pickEditable = (body) => {
+  const result = {};
+  for (const key of ["amount", "type", "category", "description", "date"]) {
+    if (body[key] !== undefined) result[key] = body[key];
+  }
+  return result;
+};
 
 router.get("/", async (req, res) => {
   try {
     const { search } = req.query;
-    const where = {};
+    const where = { userId: req.user.id };
 
     if (search && search.trim()) {
       const safe = search.trim().replace(/[\\%_]/g, "\\$&");
@@ -43,7 +45,9 @@ router.get("/", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   try {
-    const transaction = await Transaction.findByPk(req.params.id);
+    const transaction = await Transaction.findOne({
+      where: { id: req.params.id, userId: req.user.id },
+    });
     if (!transaction) {
       return res.status(404).json({ error: "Транзакция не найдена" });
     }
@@ -69,6 +73,7 @@ router.post("/", async (req, res) => {
       category,
       description,
       date: date || new Date().toISOString().split("T")[0],
+      userId: req.user.id, // берём из токена, а не из тела запроса
     });
 
     res.status(201).json(newTransaction);
@@ -79,14 +84,15 @@ router.post("/", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
   try {
-    const transaction = await Transaction.findByPk(req.params.id);
+    const transaction = await Transaction.findOne({
+      where: { id: req.params.id, userId: req.user.id },
+    });
     if (!transaction) {
       return res.status(404).json({ error: "Нечего обновлять, ID не найден" });
     }
 
-    await Transaction.update(req.body, { where: { id: req.params.id } });
-    const updated = await Transaction.findByPk(req.params.id);
-    res.json(updated);
+    await transaction.update(pickEditable(req.body));
+    res.json(transaction);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -94,14 +100,15 @@ router.put("/:id", async (req, res) => {
 
 router.delete("/:id", async (req, res) => {
   try {
-    const transaction = await Transaction.findByPk(req.params.id);
-    if (!transaction) {
+    const deleted = await Transaction.destroy({
+      where: { id: req.params.id, userId: req.user.id },
+    });
+    if (!deleted) {
       return res
         .status(404)
         .json({ error: "Транзакция не найдена, удалять нечего" });
     }
 
-    await Transaction.destroy({ where: { id: req.params.id } });
     res.json({ message: "Транзакция удалена успешно" });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -110,9 +117,8 @@ router.delete("/:id", async (req, res) => {
 
 router.get("/stats/balance", async (req, res) => {
   try {
-    const { fn, col, literal } = require("sequelize");
-
     const result = await Transaction.findAll({
+      where: { userId: req.user.id },
       attributes: [
         [
           fn(
@@ -147,9 +153,8 @@ router.get("/stats/balance", async (req, res) => {
 
 router.get("/stats/by-category", async (req, res) => {
   try {
-    const { fn, col, literal } = require("sequelize");
-
     const stats = await Transaction.findAll({
+      where: { userId: req.user.id },
       attributes: [
         "category",
         "type",
@@ -169,9 +174,8 @@ router.get("/stats/by-category", async (req, res) => {
 
 router.get("/stats/monthly", async (req, res) => {
   try {
-    const { fn, col, literal } = require("sequelize");
-
     const stats = await Transaction.findAll({
+      where: { userId: req.user.id },
       attributes: [
         [fn("to_char", col("date"), "YYYY-MM"), "month"],
         "type",

@@ -2,7 +2,12 @@
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Transaction extends Model {
-    static associate(models) {}
+    static associate(models) {
+      Transaction.belongsTo(models.User, {
+        foreignKey: "userId",
+        as: "user",
+      });
+    }
   }
   Transaction.init(
     {
@@ -19,6 +24,10 @@ module.exports = (sequelize, DataTypes) => {
       date: {
         type: DataTypes.DATEONLY,
         allowNull: false,
+      },
+      userId: {
+        type: DataTypes.INTEGER,
+        allowNull: true, // null только у старых записей, созданных до авторизации
       },
     },
     {

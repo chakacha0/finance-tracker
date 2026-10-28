@@ -1,0 +1,402 @@
+@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Onest:wght@400;500;600&display=swap");
+
+.pb {
+  --bg: #e6daf7;
+  --card: #f5eefd;
+  --violet: #6d3fc0;
+  --violet-dark: #3a1d73;
+  --lilac: #cdb6f2;
+  --lime: #c3e063;
+  --pink: #f3b6c6;
+  --text: #2a1650;
+  --muted: #7d68a8;
+
+  width: 100%;
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 32px 10%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Onest", system-ui, sans-serif;
+  font-size: 15px;
+}
+.pb *,
+.pb *::before,
+.pb *::after {
+  box-sizing: border-box;
+}
+
+.pb h2,
+.pb h3,
+.pb-sum {
+  font-family: "Bricolage Grotesque", "Onest", sans-serif;
+  font-weight: 800;
+  color: var(--violet-dark);
+  margin: 0;
+}
+.pb h2 {
+  font-size: 40px;
+  line-height: 1.1;
+  margin-bottom: 20px;
+}
+.pb h3 {
+  font-size: 18px;
+  margin-bottom: 14px;
+}
+
+/* статус соединения */
+.pb-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+.pb-status::before {
+  content: "";
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--muted);
+}
+.pb-status.on::before {
+  background: var(--lime);
+}
+.pb-status.off::before {
+  background: #e0527a;
+}
+
+.pb-error {
+  background: var(--pink);
+  color: var(--violet-dark);
+  padding: 10px 16px;
+  border-radius: 16px;
+  margin-bottom: 16px;
+  font-weight: 500;
+}
+
+/* поля и кнопки */
+.pb-form {
+  display: flex;
+  gap: 8px;
+  margin: 12px 0;
+}
+.pb-form input {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 16px;
+  border: 0;
+  border-radius: 16px;
+  background: #fff;
+  color: var(--text);
+  font: inherit;
+  outline: none;
+}
+.pb-form input::placeholder {
+  color: var(--muted);
+}
+.pb-form input:focus {
+  box-shadow: 0 0 0 3px var(--lilac);
+}
+
+.pb button {
+  padding: 12px 22px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--violet);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.pb button:hover {
+  background: var(--violet-dark);
+}
+.pb .pb-back {
+  background: var(--card);
+  color: var(--violet);
+  padding: 8px 18px;
+  margin-bottom: 16px;
+}
+.pb .pb-back:hover {
+  background: #fff;
+}
+
+/* форма создания копилки на экране списка — тёмная панель */
+.pb > .pb-form {
+  background: var(--violet-dark);
+  padding: 16px;
+  border-radius: 24px;
+  margin: 0 0 20px;
+}
+.pb > .pb-form button {
+  background: var(--lime);
+  color: var(--violet-dark);
+}
+.pb > .pb-form button:hover {
+  background: #d3ec82;
+}
+
+/* список копилок */
+.pb-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 12px;
+}
+.pb-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 24px;
+  background: var(--card);
+  border-radius: 24px;
+  cursor: pointer;
+  transition:
+    transform 0.15s,
+    background 0.15s;
+}
+.pb-list li:hover {
+  background: #fff;
+  transform: translateY(-2px);
+}
+.pb-list li b {
+  font-weight: 600;
+  font-size: 16px;
+}
+.pb-list li span {
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-weight: 700;
+  color: var(--violet);
+}
+.pb-list li.empty {
+  cursor: default;
+  justify-content: center;
+  color: var(--muted);
+}
+.pb-list li.empty:hover {
+  background: var(--card);
+  transform: none;
+}
+
+/* основная карточка копилки */
+.pb-main {
+  display: flex;
+  gap: 32px;
+  align-items: center;
+  flex-wrap: wrap;
+  background: var(--card);
+  border-radius: 28px;
+  padding: 28px 32px;
+}
+.pig {
+  width: 260px;
+  max-width: 100%;
+}
+.pig-fill {
+  transition: transform 0.8s ease;
+}
+.pb-info {
+  flex: 1;
+  min-width: 260px;
+}
+.pb-sum {
+  font-size: 44px;
+  line-height: 1.1;
+}
+.pb-sum small {
+  font-family: "Onest", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--muted);
+}
+.pb-percent {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 4px 14px;
+  border-radius: 999px;
+  background: var(--lime);
+  color: var(--violet-dark);
+  font-weight: 600;
+}
+.pb-info .pb-form {
+  background: var(--violet-dark);
+  padding: 12px;
+  border-radius: 24px;
+  margin: 18px 0 12px;
+}
+.pb-info .pb-form button {
+  background: var(--lime);
+  color: var(--violet-dark);
+}
+.pb-info .pb-form button:hover {
+  background: #d3ec82;
+}
+.pb-online {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* история и события */
+.pb-cols {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 16px;
+  margin-top: 16px;
+}
+.pb-cols > div {
+  background: var(--card);
+  border-radius: 28px;
+  padding: 24px 28px;
+}
+.pb-history,
+.pb-events {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 280px;
+  overflow-y: auto;
+}
+.pb-history li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  margin-bottom: 8px;
+  background: #fff;
+  border-radius: 16px;
+}
+.pb-history li b {
+  font-weight: 600;
+  margin-right: auto;
+}
+.pb-history li small {
+  color: var(--muted);
+}
+.pb-events li {
+  padding: 8px 14px;
+  margin-bottom: 6px;
+  border-radius: 14px;
+  font-size: 14px;
+  background: #fff;
+}
+.pb-events li.joined {
+  color: #5d7a0a;
+}
+.pb-events li.left {
+  color: var(--muted);
+}
+
+@media (max-width: 800px) {
+  .pb {
+    padding: 20px 16px;
+  }
+  .pb-cols {
+    grid-template-columns: 1fr;
+  }
+  .pb h2 {
+    font-size: 32px;
+  }
+}
+
+/* код приглашения */
+.pb-invite {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: -8px 0 16px;
+  color: var(--muted);
+}
+.pb-code {
+  padding: 6px 16px;
+  border-radius: 999px;
+  background: var(--lilac);
+  color: var(--violet-dark);
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: 0.18em;
+}
+.pb .pb-copy {
+  padding: 7px 16px;
+  background: var(--card);
+  color: var(--violet);
+}
+.pb .pb-copy:hover {
+  background: #fff;
+}
+.pb-code-input {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+/* карточки копилок */
+.pb-grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 16px;
+}
+.pb-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 20px 20px 18px;
+  background: var(--card);
+  border-radius: 28px;
+  cursor: pointer;
+  transition:
+    transform 0.15s,
+    background 0.15s;
+}
+.pb-card:hover {
+  background: #fff;
+  transform: translateY(-3px);
+}
+.pb-card .pig {
+  width: 100%;
+  max-width: 190px;
+  align-self: center;
+}
+.pb-card-name {
+  margin-top: 6px;
+  font-family: "Bricolage Grotesque", "Onest", sans-serif;
+  font-weight: 800;
+  font-size: 20px;
+  line-height: 1.15;
+  color: var(--violet-dark);
+  overflow-wrap: anywhere;
+}
+.pb-card-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--muted);
+}
+.pb-card-row b {
+  color: var(--text);
+  font-weight: 600;
+}
+.pb-card-pct {
+  align-self: flex-start;
+  margin-top: 6px;
+  padding: 4px 14px;
+  border-radius: 999px;
+  background: var(--lime);
+  color: var(--violet-dark);
+  font-weight: 600;
+}
+.pb-empty {
+  padding: 28px;
+  background: var(--card);
+  border-radius: 24px;
+  text-align: center;
+  color: var(--muted);
+}

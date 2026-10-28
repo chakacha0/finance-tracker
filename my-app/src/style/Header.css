@@ -1,0 +1,90 @@
+@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Onest:wght@400;500;600&display=swap");
+
+.app-header {
+  --bg: #e6daf7;
+  --card: #f5eefd;
+  --violet: #6d3fc0;
+  --violet-dark: #3a1d73;
+  --lime: #c3e063;
+  --muted: #7d68a8;
+
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 24px 10% 0;
+  background: var(--bg);
+  font-family: "Onest", system-ui, sans-serif;
+  font-size: 15px;
+}
+.app-header *,
+.app-header *::before,
+.app-header *::after {
+  box-sizing: border-box;
+}
+
+/* логотип */
+.hdr-brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  text-decoration: none;
+}
+.hdr-logo {
+  width: 72px;
+  height: 72px;
+  flex-shrink: 0;
+  display: block;
+}
+.hdr-title {
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-weight: 800;
+  font-size: clamp(28px, 4vw, 48px);
+  line-height: 1;
+  color: var(--violet-dark);
+}
+
+/* навигация */
+.hdr-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px;
+  background: var(--card);
+  border-radius: 999px;
+}
+.hdr-nav a,
+.hdr-nav button {
+  padding: 9px 18px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+.hdr-nav a:hover,
+.hdr-nav button:hover {
+  color: var(--violet-dark);
+}
+.hdr-nav a.active {
+  background: var(--violet);
+  color: #fff;
+}
+
+@media (max-width: 700px) {
+  .app-header {
+    padding: 16px 16px 0;
+  }
+  .hdr-logo {
+    width: 52px;
+    height: 52px;
+  }
+}

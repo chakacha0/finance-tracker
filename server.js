@@ -3,6 +3,8 @@ const express = require("express");
 const transactionsRouter = require("./routes/transactions");
 const userAuthRouter = require("./routes/userAuth");
 const userProfileRouter = require("./routes/userProfile");
+const http = require("http");
+const initSockets = require("./sockets");
 
 const app = express();
 app.use(express.json());
@@ -23,6 +25,6 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: "Пупупу что-то не так с сервером" });
 });
 
-app.listen(PORT, () => {
-  console.log(`я работаю на http://localhost:${PORT}`);
-});
+const server = http.createServer(app);
+initSockets(server);
+server.listen(PORT, () => console.log(`Server on ${PORT}`));

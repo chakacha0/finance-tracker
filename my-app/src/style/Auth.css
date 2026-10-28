@@ -1,0 +1,358 @@
+@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Onest:wght@400;500;600&display=swap");
+
+.auth-page,
+.profile-page,
+.auth-loading {
+  --bg: #e6daf7;
+  --card: #f5eefd;
+  --violet: #6d3fc0;
+  --violet-dark: #3a1d73;
+  --lilac: #cdb6f2;
+  --lime: #c3e063;
+  --pink: #f3b6c6;
+  --text: #2a1650;
+  --muted: #7d68a8;
+  font-family: "Onest", system-ui, sans-serif;
+  font-size: 15px;
+  color: var(--text);
+}
+.auth-page *,
+.profile-page * {
+  box-sizing: border-box;
+}
+
+/* ---------- вход / регистрация ---------- */
+.auth-page {
+  min-height: 100vh;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  padding: 32px 16px;
+}
+.auth-brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.auth-coin {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--lime);
+  border: 4px solid var(--violet);
+  outline: 3px dotted var(--violet-dark);
+  outline-offset: -10px;
+  display: grid;
+  place-items: center;
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-weight: 800;
+  font-size: 30px;
+  color: var(--violet-dark);
+}
+.auth-brand-title {
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-weight: 800;
+  font-size: 44px;
+  color: var(--violet-dark);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--violet-dark);
+  color: #fff;
+  border-radius: 28px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.auth-card h1 {
+  margin: 0 0 4px;
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-weight: 800;
+  font-size: 28px;
+}
+.auth-card label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--lilac);
+}
+.auth-card input {
+  padding: 13px 16px;
+  border: 0;
+  border-radius: 16px;
+  background: #fff;
+  color: var(--text);
+  font: inherit;
+  font-size: 15px;
+  outline: none;
+}
+.auth-card input::placeholder {
+  color: var(--muted);
+}
+.auth-card input:focus {
+  box-shadow: 0 0 0 3px var(--lilac);
+}
+
+.auth-card button[type="submit"] {
+  margin-top: 6px;
+  padding: 14px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--lime);
+  color: var(--violet-dark);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.auth-card button[type="submit"]:hover:not(:disabled) {
+  background: #d3ec82;
+}
+.auth-card button[type="submit"]:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.auth-switch {
+  margin: 4px 0 0;
+  text-align: center;
+  color: var(--lilac);
+  font-size: 14px;
+}
+.auth-switch a {
+  color: var(--lime);
+  font-weight: 600;
+  text-decoration: none;
+}
+.auth-switch a:hover {
+  text-decoration: underline;
+}
+
+.auth-error {
+  background: var(--pink);
+  color: var(--violet-dark);
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 500;
+}
+.auth-error ul {
+  margin: 6px 0 0;
+  padding-left: 18px;
+  font-weight: 400;
+}
+
+.auth-loading {
+  min-height: 100vh;
+  background: var(--bg);
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+}
+
+/* ---------- личный кабинет ---------- */
+.profile-page {
+  min-height: 100vh;
+  background: var(--bg);
+  padding: 24px 15% 48px;
+}
+.profile-back {
+  display: inline-block;
+  margin-bottom: 12px;
+  color: var(--violet);
+  font-weight: 600;
+  text-decoration: none;
+}
+.profile-back:hover {
+  text-decoration: underline;
+}
+.profile-title {
+  margin: 0 0 24px;
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-weight: 800;
+  font-size: 44px;
+  color: var(--violet-dark);
+}
+.profile-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.profile-card {
+  background: var(--card);
+  border-radius: 28px;
+  padding: 28px 32px;
+}
+.profile-card h2 {
+  margin: 0 0 16px;
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-weight: 800;
+  font-size: 20px;
+  color: var(--violet-dark);
+}
+.profile-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 24px;
+  background: var(--lime);
+  color: var(--violet-dark);
+  display: grid;
+  place-items: center;
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-weight: 800;
+  font-size: 32px;
+  margin-bottom: 20px;
+}
+.profile-label {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 14px;
+}
+.profile-value {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--violet-dark);
+  word-break: break-all;
+}
+
+.profile-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-self: start;
+}
+.profile-actions button {
+  padding: 13px 20px;
+  border: 0;
+  border-radius: 999px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-violet {
+  background: var(--violet);
+  color: #fff;
+}
+.btn-violet:hover {
+  background: var(--violet-dark);
+}
+.btn-danger {
+  background: var(--pink);
+  color: var(--violet-dark);
+}
+.btn-danger:hover:not(:disabled) {
+  background: #eea0b5;
+}
+.btn-ghost {
+  background: #fff;
+  color: var(--violet);
+}
+.btn-ghost:hover:not(:disabled) {
+  background: var(--lilac);
+}
+.profile-actions button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.profile-confirm p {
+  margin: 0 0 10px;
+  color: var(--muted);
+}
+.profile-confirm-row {
+  display: flex;
+  gap: 8px;
+}
+.profile-confirm-row button {
+  flex: 1;
+}
+
+@media (max-width: 800px) {
+  .profile-page {
+    padding: 24px 16px 32px;
+  }
+  .profile-grid {
+    grid-template-columns: 1fr;
+  }
+  .auth-brand-title {
+    font-size: 32px;
+  }
+}
+
+/* ---------- вкладки личного кабинета ---------- */
+.profile-tabs {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 5px;
+  margin-bottom: 24px;
+  background: var(--card);
+  border-radius: 999px;
+}
+.profile-tabs button {
+  padding: 10px 22px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+.profile-tabs button:hover {
+  color: var(--violet-dark);
+}
+.profile-tabs button.active {
+  background: var(--violet);
+  color: #fff;
+}
+
+/* заглушка вкладки «Кредиты» */
+.profile-stub {
+  background: var(--card);
+  border-radius: 28px;
+  padding: 56px 32px;
+  text-align: center;
+  color: var(--muted);
+}
+.profile-stub h2 {
+  margin: 0 0 8px;
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-weight: 800;
+  font-size: 24px;
+  color: var(--violet-dark);
+}
+.profile-stub p {
+  margin: 0;
+}
+
+/* копилки внутри кабинета: убираем собственный фон, отступы и высоту страницы */
+.profile-page .pb {
+  min-height: auto;
+  padding: 0;
+  background: transparent;
+}
+.profile-page .pb h2 {
+  font-size: 32px;
+}
+
+@media (max-width: 800px) {
+  .profile-tabs {
+    display: flex;
+    border-radius: 24px;
+  }
+  .profile-tabs button {
+    flex: 1 1 auto;
+    padding: 10px 14px;
+  }
+}

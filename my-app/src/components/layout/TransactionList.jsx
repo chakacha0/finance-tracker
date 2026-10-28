@@ -11,6 +11,7 @@ import UndoToast from "./UndoToast";
 import Notice from "./Notice";
 import useDebounce from "../../hooks/useDebounce";
 import TransactionForm from "./TransactionForm";
+import PiggyBank from "./PiggyBank";
 
 export default function TransactionList() {
   const [items, setItems] = useState([]);
@@ -174,14 +175,6 @@ export default function TransactionList() {
 
   return (
     <div className="tx">
-      <header className="tx-head">
-        <h1 className="tx-brand">
-          <img src="/logo-mark.svg" alt="" />
-          Моя монетка
-        </h1>
-        <span>{items.length} операций</span>
-      </header>
-
       <TransactionStats items={items} />
 
       <div className="tx-layout">
@@ -278,7 +271,6 @@ export default function TransactionList() {
           )}
         </section>
       </div>
-
       {notice && (
         <Notice
           key={notice.id}
